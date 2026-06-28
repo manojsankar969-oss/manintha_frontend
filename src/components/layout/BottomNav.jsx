@@ -4,6 +4,7 @@ import {
   Sparkles, 
   History, 
   FileSpreadsheet, 
+  BarChart3,
   Settings 
 } from 'lucide-react';
 
@@ -13,6 +14,7 @@ export function BottomNav({ activeTab, setActiveTab, user }) {
     { id: 'history', label: 'History', icon: History },
     { id: 'generator', label: 'Generate', icon: Sparkles, isFloating: true },
     { id: 'templates', label: 'Templates', icon: FileSpreadsheet },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

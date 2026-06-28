@@ -10,22 +10,15 @@ import {
   User,
   ShieldAlert
 } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
-
 export function Sidebar({ activeTab, setActiveTab, user, onLogout }) {
-  const { theme, setTheme } = useTheme();
-
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'generator', label: 'Generate Script', icon: Sparkles },
     { id: 'history', label: 'History', icon: History },
     { id: 'templates', label: 'Templates', icon: FileSpreadsheet },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, adminOnly: true },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
-
-  // Filter navigation items based on user role
-  const filteredNavItems = navItems.filter(item => !item.adminOnly || user?.role === 'admin');
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 h-screen sticky top-0 transition-colors duration-300">
@@ -46,7 +39,7 @@ export function Sidebar({ activeTab, setActiveTab, user, onLogout }) {
 
       {/* Navigation Links */}
       <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        {filteredNavItems.map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           return (
@@ -66,26 +59,8 @@ export function Sidebar({ activeTab, setActiveTab, user, onLogout }) {
         })}
       </nav>
 
-      {/* Theme Toggle & User Profile */}
-      <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-4">
-        {/* Theme Buttons */}
-        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs">
-          {['light', 'dark', 'system'].map((t) => (
-            <button
-              key={t}
-              onClick={() => setTheme(t)}
-              className={`flex-1 py-1.5 rounded-lg font-medium capitalize transition-all duration-150 ${
-                theme === t
-                  ? 'bg-white dark:bg-slate-700 text-slate-950 dark:text-white shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-
-        {/* User Card */}
+      {/* User Profile */}
+      <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-4">{/* User Card */}
         <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/80">
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div className="h-9 w-9 rounded-lg bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-semibold shrink-0">

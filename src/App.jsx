@@ -113,10 +113,8 @@ function App() {
       fetchTemplates();
       // Pre-load history for dashboard
       fetchHistory(1);
-      // Pre-load analytics if admin
-      if (user.role === 'admin') {
-        fetchAnalytics();
-      }
+      // Pre-load analytics
+      fetchAnalytics();
     }
   }, [user, fetchTemplates, fetchHistory, fetchAnalytics]);
 
@@ -142,9 +140,7 @@ function App() {
     // Proactively prepend script output record into history list cache
     setHistory(prev => [newRecord, ...prev]);
     // Refresh analytics
-    if (user?.role === 'admin') {
-      fetchAnalytics();
-    }
+    fetchAnalytics();
   });
 
   // Automatically update the staff name in generator form when user logs in
@@ -159,7 +155,7 @@ function App() {
     if (!user) return;
     if (activeTab === 'history') {
       fetchHistory(1);
-    } else if (activeTab === 'analytics' && user.role === 'admin') {
+    } else if (activeTab === 'analytics') {
       fetchAnalytics();
     } else if (activeTab === 'templates') {
       fetchTemplates();
@@ -389,8 +385,8 @@ function App() {
             />
           )}
 
-          {/* Analytics Tab (Admin Only) */}
-          {activeTab === 'analytics' && user.role === 'admin' && (
+          {/* Analytics Tab */}
+          {activeTab === 'analytics' && (
             <div className="space-y-6">
               <div>
                 <h2 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
