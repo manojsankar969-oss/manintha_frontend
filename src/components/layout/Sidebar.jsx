@@ -16,9 +16,11 @@ export function Sidebar({ activeTab, setActiveTab, user, onLogout }) {
     { id: 'generator', label: 'Generate Script', icon: Sparkles },
     { id: 'history', label: 'History', icon: History },
     { id: 'templates', label: 'Templates', icon: FileSpreadsheet },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, adminOnly: true },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
+
+  const filteredNavItems = navItems.filter(item => !item.adminOnly || user?.role === 'admin');
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 h-screen sticky top-0 transition-colors duration-300">
@@ -39,7 +41,7 @@ export function Sidebar({ activeTab, setActiveTab, user, onLogout }) {
 
       {/* Navigation Links */}
       <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
+        {filteredNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           return (
