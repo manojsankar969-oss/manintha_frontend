@@ -29,7 +29,7 @@ const getTemplateIcon = (name) => {
 export function TemplatesPage({ templates, loading, user, onApply, onRefresh }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
   // Form states for new template
@@ -70,7 +70,7 @@ export function TemplatesPage({ templates, loading, user, onApply, onRefresh }) 
     e.preventDefault();
     if (!newTemplateName.trim()) return;
 
-    setLoading(true);
+    setSaving(true);
     setError(null);
 
     try {
@@ -86,7 +86,7 @@ export function TemplatesPage({ templates, loading, user, onApply, onRefresh }) 
       console.error('Failed to create template:', err);
       setError(err.message || 'Failed to create template.');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -329,11 +329,11 @@ export function TemplatesPage({ templates, loading, user, onApply, onRefresh }) 
                 </button>
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={saving}
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-750 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-md shadow-indigo-100 dark:shadow-none"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{loading ? 'Saving...' : 'Save Template'}</span>
+                  <span>{saving ? 'Saving...' : 'Save Template'}</span>
                 </button>
               </div>
             </form>
