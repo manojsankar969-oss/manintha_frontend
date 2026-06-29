@@ -233,9 +233,11 @@ function App() {
 
   // Show login page if unauthenticated
   if (!user) {
-    return <Login onAuthSuccess={(user, session) => {
+    return <Login onAuthSuccess={async (_user, session) => {
       setSession(session);
-      setUser(user);
+      const profile = await fetchUserProfile(session);
+      setUser(profile);
+      setAuthLoading(false);
     }} />;
   }
 
