@@ -28,57 +28,68 @@ import { TemplatesPage } from './components/templates/TemplatesPage';
 import { AnalyticsDashboard } from './components/analytics/AnalyticsDashboard';
 import { Settings } from './components/settings/Settings';
 
-import { Sparkles, Menu, Send } from 'lucide-react';
+import { Sparkles, Send } from 'lucide-react';
 import './App.css';
+
+const fetchUserProfile = async (session) => {
+  if (!session?.user) return null;
+  try {
+    const profile = await api.getMe();
+    return {
+      id: session.user.id,
+      email: session.user.email,
+      name: profile.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+      role: profile.role || 'staff'
+    };
+  } catch {
+    return {
+      id: session.user.id,
+      email: session.user.email,
+      name: session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+      role: 'staff'
+    };
+  }
+};
 
 function App() {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'dashboard');
   const [templates, setTemplates] = useState([]);
+  const [templatesLoading, setTemplatesLoading] = useState(false);
 
   // 1. Supabase Session Listener
   useEffect(() => {
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let cancelled = false;
+
+    const handleSession = async (session) => {
       setSession(session);
-      if (session?.user) {
-        const email = session.user.email;
-        // Basic role determination for UI
-        const role = (email.toLowerCase().includes('manoj') || email.toLowerCase() === 'manojsankar969@gmail.com') ? 'admin' : 'staff';
-        setUser({
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.user_metadata?.full_name || email.split('@')[0],
-          role: role
-        });
+      const profile = await fetchUserProfile(session);
+      if (!cancelled) {
+        setUser(profile);
+        setAuthLoading(false);
       }
-      setAuthLoading(false);
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!cancelled) handleSession(session);
     });
 
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session?.user) {
-        const email = session.user.email;
-        const role = (email.toLowerCase().includes('manoj') || email.toLowerCase() === 'manojsankar969@gmail.com') ? 'admin' : 'staff';
-        setUser({
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.user_metadata?.full_name || email.split('@')[0],
-          role: role
-        });
-      } else {
-        setUser(null);
-      }
-      setAuthLoading(false);
+      if (!cancelled) handleSession(session);
     });
 
     return () => {
+      cancelled = true;
       subscription.unsubscribe();
     };
   }, []);
+
+  // Persist active tab
+  useEffect(() => {
+    localStorage.setItem('activeTab', activeTab);
+  }, [activeTab]);
 
   // 2. Load History Data Hook
   const { 
@@ -100,11 +111,14 @@ function App() {
 
   // 4. Fetch templates from API
   const fetchTemplates = useCallback(async () => {
+    setTemplatesLoading(true);
     try {
       const res = await api.getTemplates();
       setTemplates(res || []);
     } catch (err) {
       console.error('Failed to fetch templates:', err);
+    } finally {
+      setTemplatesLoading(false);
     }
   }, []);
 
@@ -379,6 +393,7 @@ function App() {
           {activeTab === 'templates' && (
             <TemplatesPage 
               templates={templates} 
+              loading={templatesLoading}
               user={user} 
               onApply={handleApplyTemplate} 
               onRefresh={fetchTemplates} 

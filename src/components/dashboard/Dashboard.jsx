@@ -77,7 +77,7 @@ export function Dashboard({ user, history, analytics, onNavigate, onViewRecord }
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            {getGreeting()}, {user?.name || 'Manoj'} 👋
+            {getGreeting()}, {user?.name } 👋
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-450 mt-1 font-semibold">
             Welcome back. Here is what is happening with your sales upsells today.

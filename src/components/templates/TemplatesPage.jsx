@@ -26,7 +26,7 @@ const getTemplateIcon = (name) => {
   return Sparkles;
 };
 
-export function TemplatesPage({ templates, user, onApply, onRefresh }) {
+export function TemplatesPage({ templates, loading, user, onApply, onRefresh }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -131,7 +131,18 @@ export function TemplatesPage({ templates, user, onApply, onRefresh }) {
 
       {/* Templates Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {templates.map((template) => {
+        {loading ? (
+          <div className="col-span-full flex items-center justify-center py-16">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-xs font-semibold text-slate-400">Loading templates...</p>
+            </div>
+          </div>
+        ) : templates.length === 0 ? (
+          <div className="col-span-full text-center py-16 text-slate-400 dark:text-slate-500 font-medium text-xs">
+            No templates found. {isAdmin ? 'Create one to get started.' : ''}
+          </div>
+        ) : templates.map((template) => {
           const Icon = getTemplateIcon(template.name);
           const data = template.data || {};
           

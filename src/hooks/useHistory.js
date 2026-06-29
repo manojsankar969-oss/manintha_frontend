@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
 import { api } from '../services/api';
 
+const DEFAULT_PAGE_LIMIT = 20;
+
 export const useHistory = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,7 +17,7 @@ export const useHistory = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.getHistory(pageToFetch, 10, search, filters);
+      const response = await api.getHistory(pageToFetch, DEFAULT_PAGE_LIMIT, search, filters);
       setHistory(response.data || []);
       setTotal(response.total || 0);
       setPage(response.page || 1);

@@ -31,6 +31,7 @@ export default {
           650: '#c02030',
         },
         emerald: {
+          150: '#a7f3d0',
           455: '#34d399',
         },
         amber: {

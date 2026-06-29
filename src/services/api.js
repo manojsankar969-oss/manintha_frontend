@@ -50,6 +50,11 @@ async function request(endpoint, options = {}) {
 
 export const api = {
   /**
+   * Fetches the current user's profile (including role from DB).
+   */
+  getMe: () => request('/auth/me'),
+
+  /**
    * Triggers script generation.
    * @param {Object} data - Form values
    */

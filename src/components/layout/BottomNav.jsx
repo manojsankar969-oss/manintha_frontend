@@ -14,9 +14,9 @@ export function BottomNav({ activeTab, setActiveTab, user }) {
     { id: 'history', label: 'History', icon: History },
     { id: 'generator', label: 'Generate', icon: Sparkles, isFloating: true },
     { id: 'templates', label: 'Templates', icon: FileSpreadsheet },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, adminOnly: true },
     { id: 'settings', label: 'Settings', icon: Settings },
-  ];
+  ].filter(item => !item.adminOnly || user?.role === 'admin');
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 transition-colors duration-300 pb-safe">
